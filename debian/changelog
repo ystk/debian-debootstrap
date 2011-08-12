@@ -1,3 +1,11 @@
+debootstrap (1.0.26+squeeze1skerlet1) stable-proposed-updates; urgency=low
+
+  [ Skerlet ]
+  * Initial version for Skerlet
+  * Add a symlink "scripts/ashitaka"
+
+ -- Skerlet Project Team <skerlet@swc.toshiba.co.jp>  Fri, 12 Aug 2011 17:17:33 +0900
+
 debootstrap (1.0.26+squeeze1) stable-proposed-updates; urgency=low
 
   [ Miguel Figueiredo ]
