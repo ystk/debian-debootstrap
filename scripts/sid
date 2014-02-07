@@ -2,6 +2,7 @@ mirror_style release
 download_style apt
 finddebs_style from-indices
 variants - buildd fakechroot minbase scratchbox
+keyring /usr/share/keyrings/debian-archive-keyring.gpg
 
 if doing_variant fakechroot; then
 	test "$FAKECHROOT" = "true" || error 1 FAKECHROOTREQ "This variant requires fakechroot environment to be started"
@@ -22,7 +23,7 @@ work_out_debs () {
 		#  ^^ should be getting debconf here somehow maybe
 		base="$(get_debs Priority: important)"
 	elif doing_variant buildd || doing_variant scratchbox; then
-		base="apt $(get_debs Build-Essential: yes)"
+		base="apt build-essential"
 	elif doing_variant minbase; then
 		base="apt"
 	fi
@@ -46,12 +47,6 @@ first_stage_install () {
 		chown 0:0 "$TARGET/etc/fstab"; chmod 644 "$TARGET/etc/fstab"
 	fi
 
-	if doing_variant fakechroot; then
-		setup_devices_fakechroot
-	else
-		setup_devices
-	fi
-
 	x_feign_install () {
 		local pkg="$1"
 		local deb="$(debfor $pkg)"
@@ -62,6 +57,7 @@ first_stage_install () {
 		echo \
 "Package: $pkg
 Version: $ver
+Maintainer: unknown
 Status: install ok installed" >> "$TARGET/var/lib/dpkg/status"
 
 		touch "$TARGET/var/lib/dpkg/info/${pkg}.list"
@@ -71,6 +67,8 @@ Status: install ok installed" >> "$TARGET/var/lib/dpkg/status"
 }
 
 second_stage_install () {
+	setup_devices
+
 	x_core_install () {
 		smallyes '' | in_target dpkg --force-depends --install $(debfor "$@")
 	}

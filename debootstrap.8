@@ -15,7 +15,7 @@ debootstrap \- Bootstrap a basic Debian system
 .B debootstrap
 bootstraps a basic Debian system of
 .I SUITE
-(eg, lenny, squeeze, sid; or stable, testing, unstable) into
+into
 .I TARGET
 from
 .I MIRROR
@@ -23,6 +23,12 @@ by running
 .IR SCRIPT .
 .I MIRROR
 can be an http:// URL, a file:/// URL, or an ssh:/// URL.
+.PP
+The
+.I SUITE
+may be a release code name (eg, sid, jessie, wheezy)
+or a symbolic name (eg, unstable, testing, stable, oldstable)
+.PP
 Notice that file:/ URLs are translated to file:/// (correct scheme as
 described in RFC1738 for local filenames), and file:// will \fBnot\fR work.
 ssh://USER@HOST/PATH URLs are retrieved using
@@ -79,9 +85,13 @@ Debian installation in
 .IR TARGET .
 .IP
 .IP "\fB\-\-keyring=KEYRING\fP"
-Download signatures for retrieved Release files and check them against
-.IR KEYRING .
-By default, Release file signatures are not checked.
+Override the default keyring for the distribution being bootstrapped,
+and use
+.IR KEYRING
+to check signatures of retrieved Release files.
+.IP
+.IP "\fB\-\-no-check-gpg\fP"
+Disables checking gpg signatures of retrieved Release files.
 .IP
 .IP "\fB\-\-verbose\fP"
 Produce more info about downloading.
@@ -126,9 +136,6 @@ packages.
 The resulting tarball may be passed to a later
 .BR \-\-unpack\-tarball .
 .IP
-.IP "\fB\-\-boot\-floppies\fP"
-Used for internal purposes by boot-floppies
-.IP
 .IP "\fB\-\-debian\-installer\fP"
 Used for internal purposes by the debian-installer
 .IP 
@@ -149,34 +156,23 @@ Read the private key from file
 .SH EXAMPLES
 .
 .PP 
-To setup a \fIsqueeze\fR system:
+To setup a \fIwheezy\fR system:
 .PP 
-# debootstrap squeeze ./squeeze-chroot http://ftp.us.debian.org/debian
+     debootstrap wheezy ./wheezy-chroot http://ftp.us.debian.org/debian
 .PP
-# debootstrap squeeze ./squeeze-chroot file:///PATH_TO_LOCAL_MIRROR/debian
+     debootstrap wheezy ./wheezy-chroot file:///LOCAL_MIRROR/debian
 .PP
-Full process to create a complete Debian installation of \fIsid\fR (unstable):
+Full process to create a complete Debian installation of \fIsid\fR (unstable)
+in a chroot:
 .PP
-     main # cd / ; mkdir /sid-root
-     main # debootstrap sid /sid-root http://ftp.us.debian.org/debian/
+     main # debootstrap sid sid-root http://ftp.us.debian.org/debian/
      [ ... watch it download the whole system ]
-     main # echo "proc /sid-root/proc proc defaults 0 0" >> /etc/fstab
-     main # mount proc /sid-root/proc -t proc
-     main # echo "sysfs /sid-root/sys sysfs defaults 0 0" >> /etc/fstab
-     main # mount sysfs /sid-root/sys -t sysfs
-     main # cp /etc/hosts /sid-root/etc/hosts
-     main # chroot /sid-root /bin/bash
-     chroot # dselect  
-     [ you may use aptitude, install mc and vim ... ]
-      main # echo "8:23:respawn:/usr/sbin/chroot /sid-root " \\
-             "/sbin/getty 38400 tty8"  >> /etc/inittab
-     [ define a login tty that will use this system ]
-      main # init q    
-     [ reload init ]
-.PP
-Note that you will generally need a recent version of debootstrap to
-do this; the version currently in stable may stop working due to changes
-to unstable shortly after the last release.
+     main # echo "proc sid-root/proc proc defaults 0 0" >> /etc/fstab
+     main # mount proc sid-root/proc -t proc
+     main # echo "sysfs sid-root/sys sysfs defaults 0 0" >> /etc/fstab
+     main # mount sysfs sid-root/sys -t sysfs
+     main # cp /etc/hosts sid-root/etc/hosts
+     main # chroot sid-root /bin/bash
 .SH AUTHOR
 .B debootstrap
 was written by Anthony Towns <ajt@debian.org>.
