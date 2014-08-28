@@ -1,9 +1,117 @@
-debootstrap (1.0.48+deb7u1) wheezy; urgency=low
+debootstrap (1.0.60) unstable; urgency=medium
+
+  [ Adam Conrad ]
+  * Add (Ubuntu) utopic as a symlink to gutsy.
+
+  [ Guillem Jover ]
+  * Sync deb support with latest dpkg-deb (closes: #739136):
+    - Add uncompressed data.tar deb member support.
+    - Add uncompressed and xz control.tar deb member support.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 06 May 2014 09:37:34 +0100
+
+debootstrap (1.0.59) unstable; urgency=medium
+
+  * Install ca-certificates as well as apt-transport-https for HTTPS
+    installations.  This makes it possible to copy certificates that were
+    built into the installer to /usr/local/share/ca-certificates/ and thus
+    have them continue to be trusted after installation.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 13 Feb 2014 13:42:54 +0000
+
+debootstrap (1.0.58) unstable; urgency=medium
+
+  * Policy version 3.9.5: no changes required.
+  * Install apt-transport-https if installing from an HTTPS mirror
+    (LP: #1135163).  It may still be necessary to copy certificates into
+    place, but there's at least a reasonable chance that somebody installing
+    from HTTPS may want to keep using it, and we have to install
+    apt-transport-https at this point otherwise they won't be able to do
+    that end-to-end.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 11 Feb 2014 17:46:41 +0000
+
+debootstrap (1.0.57) unstable; urgency=medium
+
+  * pkgdetails_perl: Only interpret percentages following whitespace, to
+    cope with GNU wget outputting the local file name (which may contain "%"
+    due to URL-encoding) after it finishes the download (LP: #1172101).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 07 Feb 2014 16:12:23 +0000
+
+debootstrap (1.0.56) unstable; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Install base-passwd and base-files in two calls rather than one to
+    avoid problems with home-built media with different ordering in
+    Packages.  Thanks to Jo Shields for pointing this out and providing
+    the workaround.  Closes: #601670.  LP: #1001131.
 
   [ Joey Hess ]
+  * When deboostrapping Debian, and the debian-archive-keyring is not
+    available, switch the default mirror to a https url. This way at
+    least the CA level of security is available even for users who
+    have no way to check gpg keys in the WoT. The https mirror is
+    currently https://mirrors.kernel.org/debian.
+  * Avoid writing https urls into sources.list, as apt does not support https.
+
+ -- Christian Perrier <bubulle@debian.org>  Mon, 30 Dec 2013 08:00:41 +0100
+
+debootstrap (1.0.55) unstable; urgency=low
+
+  [ Matthias Klose ]
+  * Add (Ubuntu) trusty as a symlink to gutsy.
+
+ -- Christian Perrier <bubulle@debian.org>  Tue, 22 Oct 2013 13:43:23 +0200
+
+debootstrap (1.0.53) unstable; urgency=low
+
+  [ Dmitrijs Ledkovs ]
+  * Set debian source format to '3.0 (native)'.
+  * Bump debhelper compat level to 9.
+  * Set Vcs-* to canonical format.
+
+  [ Christian Perrier ]
+  * Update Standards to 3.9.4 (checked)
+
+ -- Christian Perrier <bubulle@debian.org>  Sun, 14 Jul 2013 13:06:33 +0200
+
+debootstrap (1.0.52) unstable; urgency=low
+
+  * scripts/gutsy: Make the fake initctl pass through "initctl version"
+    calls, used by such things as invoke-rc.d to figure out whether it's
+    running under Upstart (LP: #1182540).
+  * scripts/sid, scripts/gutsy: Add a policy-rc.d, matching that in
+    debian-installer-utils.  This is the primary way to disable daemon
+    startup.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 22 May 2013 16:55:59 +0100
+
+debootstrap (1.0.51) unstable; urgency=low
+
+  [ Scott Kitterman ]
+  * Add (Ubuntu) saucy as a symlink to gutsy (closes: #706989).
+
+  [ Colin Watson ]
+  * Clarify location of pkgdetails.c in error message (closes: #708771).
+  * Resolve mount point symlinks relative to the target chroot before
+    unmounting them (closes: #702861, #703037, #704744).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 18 May 2013 23:18:08 +0100
+
+debootstrap (1.0.50) unstable; urgency=low
+
+  [ Hector Oron ]
+  * Report package version information on package retrieve and validation.
+    Closes: #697675
+
+ -- Christian Perrier <bubulle@debian.org>  Fri, 17 May 2013 13:34:34 +0200
+
+debootstrap (1.0.49) unstable; urgency=medium
+
   * Add support for jessie. Closes: #706788
 
- -- Cyril Brulebois <kibi@debian.org>  Mon, 03 Jun 2013 11:49:50 +0200
+ -- Joey Hess <joeyh@debian.org>  Sat, 04 May 2013 23:37:52 -0400
 
 debootstrap (1.0.48) unstable; urgency=low
 
