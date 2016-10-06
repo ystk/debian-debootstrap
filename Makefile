@@ -1,9 +1,15 @@
 # avoid dpkg-dev dependency; fish out the version with sed
 VERSION := $(shell sed 's/.*(\(.*\)).*/\1/; q' debian/changelog)
+DATE := $(shell sed -n '/^ -- /{s/.*> \(.*\)/\1/p;q;}' debian/changelog)
 
-MAKEDEV := /sbin/MAKEDEV
+MAKEDEV ?= /sbin/MAKEDEV
 
+ifeq ($(shell uname),Linux)
 all: devices.tar.gz
+else
+all:
+endif
+
 clean:
 	rm -f devices.tar.gz
 	rm -rf dev
@@ -20,7 +26,9 @@ install:
 	chown root:root $(DESTDIR)/usr/sbin/debootstrap
 	chmod 0755 $(DESTDIR)/usr/sbin/debootstrap
 
+ifeq ($(shell uname),Linux)
 	install -o root -g root -m 0644 devices.tar.gz $(DSDIR)/
+endif
 
 devices.tar.gz:
 	rm -rf dev
@@ -28,7 +36,7 @@ devices.tar.gz:
 	chown 0:0 dev
 	chmod 755 dev
 	(cd dev && $(MAKEDEV) std ptmx fd consoleonly)
-	tar cf - dev | gzip -9 >devices.tar.gz
+	tar --mtime="$(DATE)" -cf - dev | gzip -9n >devices.tar.gz
 	@if [ "$$(tar tvf devices.tar.gz | wc -l)" -lt 2 ]; then \
 		echo " ** devices.tar.gz is empty!" >&2; \
 		exit 1; \
